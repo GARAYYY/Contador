@@ -1,204 +1,230 @@
 <!DOCTYPE html>
 
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contador</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador</title>
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #020617;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #020617;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-.container {
-    width: 90%;
-    max-width: 350px;
-    text-align: center;
-}
+        .container {
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+        }
 
-.user {
-    font-size: 14px;
-    margin-bottom: 10px;
-    opacity: 0.7;
-}
+        .user {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
 
-.counter {
-    font-size: 64px;
-    font-weight: bold;
-    margin: 20px 0;
-}
+        .counter {
+            font-size: 64px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
 
-.timer {
-    font-size: 16px;
-    margin-bottom: 20px;
-    opacity: 0.8;
-}
+        .timer {
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
 
-button {
-    width: 100%;
-    padding: 14px;
-    margin-bottom: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 10px;
-}
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+        }
 
-/* Botones específicos */
-.resistencia {
-    background: #facc15;
-    color: black;
-}
+        /* Botones específicos */
+        .resistencia {
+            background: #facc15;
+            color: black;
+        }
 
-.liquido {
-    background: #f472b6;
-}
+        .liquido {
+            background: #f472b6;
+        }
 
-.reset {
-    background: #ef4444;
-}
+        .reset {
+            background: #ef4444;
+        }
 
-.logout {
-    background: #334155;
-}
-</style>
+        .logout {
+            background: #334155;
+        }
+    </style>
 
 </head>
+
 <body>
 
-<div class="container">
-    <div class="user" id="user" style="visibility: hidden;"></div>
+    <div class="container">
+        <div class="user" id="user" style="visibility: hidden;"></div>
 
-<div class="counter" id="counter">0</div>
-<div class="timer" id="timer">Tiempo: 0d 0h 0m</div>
+        <div class="counter" id="counter">0</div>
+        <div class="timer" id="timer">Tiempo: 0d 0h 0m</div>
 
-<button class="resistencia" onclick="resistencia()">Resistencia</button>
-<button class="liquido" onclick="liquido()">Líquido</button>
-<button class="reset" onclick="reiniciar()">Reiniciar</button>
-<button class="logout" onclick="logout()">Cerrar sesión</button>
+        <button class="resistencia" onclick="resistencia()">Resistencia</button>
+        <button class="liquido" onclick="liquido()">Líquido</button>
+        <button class="reset" onclick="reiniciar()">Reiniciar</button>
+        <button class="logout" onclick="logout()">Cerrar sesión</button>
 
-</div>
+    </div>
 
-<script>
-// 🔐 Login check
-const usuario = localStorage.getItem("user");
-if (!usuario) window.location.href = "index.html";
+    <script>
+        // 🔐 Login check
+        const usuario = localStorage.getItem("user");
+        if (!usuario) window.location.href = "index.html";
 
-document.getElementById("user").innerText = "Usuario: " + usuario;
+        document.getElementById("user").innerText = "Usuario: " + usuario;
 
-// ⏱️ Config
-const INTERVALO = 72 * 60 * 60 * 1000;
-const INCREMENTO = 5.8;
+        // ⏱️ Config
+        const INTERVALO = 72 * 60 * 60 * 1000;
+        const INCREMENTO = 5.8;
 
-// 📦 Datos
-let contador = parseFloat(localStorage.getItem("contador")) || 0;
-let ultima = localStorage.getItem("ultimaActualizacion");
+        // 📦 Datos
+        let contador = parseFloat(localStorage.getItem("contador")) || 0;
+        let ultima = localStorage.getItem("ultimaActualizacion");
 
-if (!ultima) {
-    ultima = Date.now();
-    localStorage.setItem("ultimaActualizacion", ultima);
-} else {
-    ultima = parseInt(ultima);
-}
+        if (!ultima) {
+            ultima = Date.now();
+            localStorage.setItem("ultimaActualizacion", ultima);
+        } else {
+            ultima = parseInt(ultima);
+        }
 
-// 🕒 Fecha inicio (solo se crea una vez)
-let inicio = localStorage.getItem("inicioUso");
-if (!inicio) {
-    inicio = Date.now();
-    localStorage.setItem("inicioUso", inicio);
-} else {
-    inicio = parseInt(inicio);
-}
+        // 🕒 Fecha inicio (solo se crea una vez)
+        let inicio = localStorage.getItem("inicioUso");
+        if (!inicio) {
+            inicio = Date.now();
+            localStorage.setItem("inicioUso", inicio);
+        } else {
+            inicio = parseInt(inicio);
+        }
 
-// 🔁 Contador de reinicios
-let reinicios = parseInt(localStorage.getItem("reinicios")) || 0;
+        // 🔁 Contador de reinicios
+        let reinicios = parseInt(localStorage.getItem("reinicios")) || 0;
 
-// 🔁 Auto incremento
-function actualizarTiempo() {
-    const ahora = Date.now();
-    const diferencia = ahora - ultima;
+        // 🔁 Auto incremento
+        function actualizarTiempo() {
+            const ahora = Date.now();
+            const diferencia = ahora - ultima;
 
-    const ciclos = Math.floor(diferencia / INTERVALO);
+            const ciclos = Math.floor(diferencia / INTERVALO);
 
-    if (ciclos > 0) {
-        contador += ciclos * INCREMENTO;
-        ultima += ciclos * INTERVALO;
+            if (ciclos > 0) {
+                contador += ciclos * INCREMENTO;
+                ultima += ciclos * INTERVALO;
 
-        guardar();
+                guardar();
+                render();
+            }
+        }
+
+        // 💾 Guardar
+        function guardar() {
+            localStorage.setItem("contador", contador);
+            localStorage.setItem("ultimaActualizacion", ultima);
+            localStorage.setItem("reinicios", reinicios);
+        }
+
+        // 🧮 Render contador
+        function render() {
+            document.getElementById("counter").innerText = contador.toFixed(2) + "€";
+        }
+
+        // ⏱️ Timer
+        function actualizarTimer() {
+            const ahora = Date.now();
+            const diff = ahora - inicio;
+
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutos = Math.floor((diff / (1000 * 60)) % 60);
+
+            document.getElementById("timer").innerText =
+                `Tiempo: ${dias}d ${horas}h ${minutos}m`;
+        }
+
+        // 🔘 Botones
+        function resistencia() {
+            contador -= 4.5;
+            guardar();
+            render();
+        }
+
+        function liquido() {
+            contador -= 6.9;
+            guardar();
+            render();
+        }
+
+        function reiniciar() {
+            contador = 0;
+            reinicios++;
+            inicio = Date.now();
+
+            localStorage.setItem("inicioUso", inicio);
+
+            guardar();
+            render();
+        }
+
+        // 🚪 Logout
+        function logout() {
+            localStorage.removeItem("user");
+            window.location.href = "index.html";
+        }
+
+        // 🚀 INIT
+        actualizarTiempo();
         render();
-    }
-}
+        actualizarTimer();
 
-// 💾 Guardar
-function guardar() {
-    localStorage.setItem("contador", contador);
-    localStorage.setItem("ultimaActualizacion", ultima);
-    localStorage.setItem("reinicios", reinicios);
-}
-
-// 🧮 Render contador
-function render() {
-    document.getElementById("counter").innerText = contador.toFixed(2) + "€";
-}
-
-// ⏱️ Timer
-function actualizarTimer() {
-    const ahora = Date.now();
-    const diff = ahora - inicio;
-
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutos = Math.floor((diff / (1000 * 60)) % 60);
-
-    document.getElementById("timer").innerText =
-        `Tiempo: ${dias}d ${horas}h ${minutos}m`;
-}
-
-// 🔘 Botones
-function resistencia() {
-    contador -= 4.5;
-    guardar();
-    render();
-}
-
-function liquido() {
-    contador -= 6.9;
-    guardar();
-    render();
-}
-
-function reiniciar() {
-    contador = 0;
-    reinicios++;
-    inicio = Date.now();
-
-    localStorage.setItem("inicioUso", inicio);
-
-    guardar();
-    render();
-}
-
-// 🚪 Logout
-function logout() {
-    localStorage.removeItem("user");
-    window.location.href = "index.html";
-}
-
-// 🚀 INIT
-actualizarTiempo();
-render();
-actualizarTimer();
-
-// 🔄 Timer en vivo
-setInterval(actualizarTimer, 1000);
-</script>
+        // 🔄 Timer en vivo
+        setInterval(actualizarTimer, 1000);
+    </script>
 
 </body>
+
 </html>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBJ1Lv13KK9MduYpGvuox_CSC08K1HtZ0",
+        authDomain: "contador-8720e.firebaseapp.com",
+        projectId: "contador-8720e",
+        storageBucket: "contador-8720e.firebasestorage.app",
+        messagingSenderId: "172651416786",
+        appId: "1:172651416786:web:6f9d040cde0c9a35c8310b",
+        measurementId: "G-FZ5JJQ4Y97"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+</script>
