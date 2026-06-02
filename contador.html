@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contador</title>
 
+    <!-- 🔥 FIREBASE COMPAT -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -79,13 +80,15 @@
     </div>
 
     <script>
-        // 🔥 Firebase config
+        // 🔥 CONFIG FIREBASE
         const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "TU_PROJECT.firebaseapp.com",
-            projectId: "TU_PROJECT"
+            apiKey: "AIzaSyCBJ1Lv13KK9MduYpGvuox_CSC08K1HtZ0",
+            authDomain: "contador-8720e.firebaseapp.com",
+            projectId: "contador-8720e",
+            appId: "1:172651416786:web:6f9d040cde0c9a35c8310b"
         };
 
+        // 🔥 INIT
         firebase.initializeApp(firebaseConfig);
 
         const auth = firebase.auth();
@@ -94,11 +97,11 @@
         let uid = null;
         let dataGlobal = null;
 
-        // ⏱️ config
+        // ⏱️ CONFIG 72h
         const INTERVALO = 72 * 60 * 60 * 1000;
         const INCREMENTO = 5.8;
 
-        // 🔐 auth check
+        // 🔐 AUTH CHECK
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = "index.html";
@@ -106,12 +109,11 @@
             }
 
             uid = user.uid;
-
-            await loadData();
+            await initUser();
         });
 
-        // 📦 cargar datos
-        async function loadData() {
+        // 📦 CREAR O CARGAR USUARIO
+        async function initUser() {
             const ref = db.collection("users").doc(uid);
             const doc = await ref.get();
 
@@ -124,14 +126,14 @@
                 });
             }
 
-            start();
+            load();
         }
 
-        // 🚀 loop principal
-        async function start() {
+        // 🚀 CARGAR Y ACTUALIZAR
+        async function load() {
             const ref = db.collection("users").doc(uid);
-
             const doc = await ref.get();
+
             let data = doc.data();
 
             const now = Date.now();
@@ -157,13 +159,13 @@
             setInterval(updateTimer, 1000);
         }
 
-        // 🧮 render
+        // 🧮 RENDER
         function render() {
             document.getElementById("counter").innerText =
                 dataGlobal.contador.toFixed(2) + " €";
         }
 
-        // ⏱️ timer
+        // ⏱️ TIMER
         function updateTimer() {
             const diff = Date.now() - dataGlobal.inicioUso;
 
@@ -175,7 +177,7 @@
                 `Tiempo: ${d}d ${h}h ${m}m`;
         }
 
-        // 🔘 botones
+        // 🔘 BOTONES
         async function resistencia() {
             const ref = db.collection("users").doc(uid);
             dataGlobal.contador -= 4.5;

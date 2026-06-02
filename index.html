@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 
+    <!-- 🔥 FIREBASE COMPAT -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
@@ -68,13 +69,15 @@
     </div>
 
     <script>
-        // 🔥 Firebase config (PEGA AQUÍ LA TUYA)
+        // 🔥 FIREBASE CONFIG (TU PROYECTO)
         const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "TU_PROJECT.firebaseapp.com",
-            projectId: "TU_PROJECT"
+            apiKey: "AIzaSyCBJ1Lv13KK9MduYpGvuox_CSC08K1HtZ0",
+            authDomain: "contador-8720e.firebaseapp.com",
+            projectId: "contador-8720e",
+            appId: "1:172651416786:web:6f9d040cde0c9a35c8310b"
         };
 
+        // 🔥 INIT
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
