@@ -1,219 +1,253 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contador</title>
 
-    <!-- 🔥 FIREBASE COMPAT -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial;
-            background: #020617;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
-        .container {
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-        }
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-        .counter {
-            font-size: 64px;
-            margin: 20px 0;
-        }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-        .timer {
-            font-size: 14px;
-            opacity: 0.7;
-            margin-bottom: 20px;
-        }
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #959697, #ececee);
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-        button {
-            width: 100%;
-            padding: 14px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 10px;
-        }
+/* 📦 TARJETA */
+.container {
+    width: 92%;
+    max-width: 380px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+}
 
-        .resistencia {
-            background: #facc15;
-        }
+/* 🔢 CONTADOR */
+.counter {
+    font-size: 58px;
+    font-weight: bold;
+    margin: 10px 0;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        .liquido {
-            background: #f472b6;
-        }
+/* ⏱️ TIMER */
+.timer {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
 
-        .reset {
-            background: #ef4444;
-        }
+/* 🔘 BOTONES */
+button {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    transition: 0.2s;
+}
 
-        .logout {
-            background: #334155;
-            color: white;
-        }
-    </style>
+/* 🎯 EFECTO CLICK */
+button:active {
+    transform: scale(0.97);
+}
+
+/* 🎨 COLORES */
+.resistencia {
+    background: linear-gradient(135deg, #fde047, #facc15);
+    color: black;
+}
+
+.liquido {
+    background: linear-gradient(135deg, #f472b6, #ec4899);
+    color: black;
+}
+
+.reset {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: black;
+}
+
+.logout {
+    background: #1e293b;
+    color: black;
+    margin-top: 12px;
+}
+
+/* ✨ HOVER (en móvil se nota poco pero queda bien) */
+button:hover {
+    opacity: 0.9;
+}
+
+/* 📱 EXTRA MOBILE FEEL */
+.counter::after {
+    content: " €";
+    font-size: 20px;
+    opacity: 0.7;
+}
+</style>
+
 </head>
 
 <body>
 
-    <div class="container">
-        <div id="counter" class="counter">0 €</div>
-        <div id="timer" class="timer">Tiempo: 0d 0h 0m</div>
+<div class="container">
+    <div id="counter" class="counter">0</div>
+    <div id="timer" class="timer">Tiempo: 0d 0h 0m</div>
 
-        <button class="resistencia" onclick="resistencia()">Resistencia</button>
-        <button class="liquido" onclick="liquido()">Líquido</button>
-        <button class="reset" onclick="reiniciar()">Reiniciar</button>
-        <button class="logout" onclick="logout()">Cerrar sesión</button>
-    </div>
+```
+<button class="resistencia" onclick="resistencia()">Resistencia</button>
+<button class="liquido" onclick="liquido()">Líquido</button>
+<button class="reset" onclick="reiniciar()">Reiniciar</button>
+<button class="logout" onclick="logout()">Cerrar sesión</button>
+```
 
-    <script>
-        // 🔥 CONFIG FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyCBJ1Lv13KK9MduYpGvuox_CSC08K1HtZ0",
-            authDomain: "contador-8720e.firebaseapp.com",
-            projectId: "contador-8720e",
-            appId: "1:172651416786:web:6f9d040cde0c9a35c8310b"
-        };
+</div>
 
-        // 🔥 INIT
-        firebase.initializeApp(firebaseConfig);
+<script>
+// 🔥 CONFIG FIREBASE
+const firebaseConfig = {
+    apiKey: "AIzaSy...",
+    authDomain: "contador-8720e.firebaseapp.com",
+    projectId: "contador-8720e",
+    appId: "1:172651416786:web:6f9d040cde0c9a35c8310b"
+};
 
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
 
-        let uid = null;
-        let dataGlobal = null;
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-        // ⏱️ CONFIG 72h
-        const INTERVALO = 72 * 60 * 60 * 1000;
-        const INCREMENTO = 5.8;
+let uid = null;
+let dataGlobal = null;
 
-        // 🔐 AUTH CHECK
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                window.location.href = "index.html";
-                return;
-            }
+const INTERVALO = 72 * 60 * 60 * 1000;
+const INCREMENTO = 5.8;
 
-            uid = user.uid;
-            await initUser();
+auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+        window.location.href = "index.html";
+        return;
+    }
+    uid = user.uid;
+    await initUser();
+});
+
+async function initUser() {
+    const ref = db.collection("users").doc(uid);
+    const doc = await ref.get();
+
+    if (!doc.exists) {
+        await ref.set({
+            contador: 0,
+            ultimaActualizacion: Date.now(),
+            inicioUso: Date.now(),
+            reinicios: 0
         });
+    }
 
-        // 📦 CREAR O CARGAR USUARIO
-        async function initUser() {
-            const ref = db.collection("users").doc(uid);
-            const doc = await ref.get();
+    load();
+}
 
-            if (!doc.exists) {
-                await ref.set({
-                    contador: 0,
-                    ultimaActualizacion: Date.now(),
-                    inicioUso: Date.now(),
-                    reinicios: 0
-                });
-            }
+async function load() {
+    const ref = db.collection("users").doc(uid);
+    const doc = await ref.get();
 
-            load();
-        }
+    let data = doc.data();
 
-        // 🚀 CARGAR Y ACTUALIZAR
-        async function load() {
-            const ref = db.collection("users").doc(uid);
-            const doc = await ref.get();
+    const now = Date.now();
+    const diff = now - data.ultimaActualizacion;
+    const cycles = Math.floor(diff / INTERVALO);
 
-            let data = doc.data();
+    if (cycles > 0) {
+        data.contador += cycles * INCREMENTO;
+        data.ultimaActualizacion += cycles * INTERVALO;
 
-            const now = Date.now();
-            const diff = now - data.ultimaActualizacion;
+        await ref.update({
+            contador: data.contador,
+            ultimaActualizacion: data.ultimaActualizacion
+        });
+    }
 
-            const cycles = Math.floor(diff / INTERVALO);
+    dataGlobal = data;
 
-            if (cycles > 0) {
-                data.contador += cycles * INCREMENTO;
-                data.ultimaActualizacion += cycles * INTERVALO;
+    render();
+    updateTimer();
+    setInterval(updateTimer, 1000);
+}
 
-                await ref.update({
-                    contador: data.contador,
-                    ultimaActualizacion: data.ultimaActualizacion
-                });
-            }
+function render() {
+    document.getElementById("counter").innerText =
+        dataGlobal.contador.toFixed(2);
+}
 
-            dataGlobal = data;
+function updateTimer() {
+    const diff = Date.now() - dataGlobal.inicioUso;
 
-            render();
-            updateTimer();
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((diff / (1000 * 60)) % 60);
 
-            setInterval(updateTimer, 1000);
-        }
+    document.getElementById("timer").innerText =
+        `Tiempo: ${d}d ${h}h ${m}m`;
+}
 
-        // 🧮 RENDER
-        function render() {
-            document.getElementById("counter").innerText =
-                dataGlobal.contador.toFixed(2) + " €";
-        }
+async function resistencia() {
+    const ref = db.collection("users").doc(uid);
+    dataGlobal.contador -= 4.5;
+    await ref.update({ contador: dataGlobal.contador });
+    render();
+}
 
-        // ⏱️ TIMER
-        function updateTimer() {
-            const diff = Date.now() - dataGlobal.inicioUso;
+async function liquido() {
+    const ref = db.collection("users").doc(uid);
+    dataGlobal.contador -= 6.9;
+    await ref.update({ contador: dataGlobal.contador });
+    render();
+}
 
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const m = Math.floor((diff / (1000 * 60)) % 60);
+async function reiniciar() {
+    const ref = db.collection("users").doc(uid);
 
-            document.getElementById("timer").innerText =
-                `Tiempo: ${d}d ${h}h ${m}m`;
-        }
+    dataGlobal.contador = 0;
+    dataGlobal.inicioUso = Date.now();
 
-        // 🔘 BOTONES
-        async function resistencia() {
-            const ref = db.collection("users").doc(uid);
-            dataGlobal.contador -= 4.5;
+    await ref.update({
+        contador: 0,
+        inicioUso: dataGlobal.inicioUso,
+        reinicios: firebase.firestore.FieldValue.increment(1)
+    });
 
-            await ref.update({ contador: dataGlobal.contador });
-            render();
-        }
+    render();
+}
 
-        async function liquido() {
-            const ref = db.collection("users").doc(uid);
-            dataGlobal.contador -= 6.9;
-
-            await ref.update({ contador: dataGlobal.contador });
-            render();
-        }
-
-        async function reiniciar() {
-            const ref = db.collection("users").doc(uid);
-
-            dataGlobal.contador = 0;
-            dataGlobal.inicioUso = Date.now();
-
-            await ref.update({
-                contador: 0,
-                inicioUso: dataGlobal.inicioUso,
-                reinicios: firebase.firestore.FieldValue.increment(1)
-            });
-
-            render();
-        }
-
-        function logout() {
-            auth.signOut();
-        }
-    </script>
+function logout() {
+    auth.signOut();
+}
+</script>
 
 </body>
-
 </html>
