@@ -15,8 +15,8 @@
         body {
             margin: 0;
             font-family: Arial;
-            background: #020617;
-            color: white;
+            background: linear-gradient(135deg, #fcfcfc, #764ba2);
+            color: black;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -70,13 +70,31 @@
 <body>
 
     <div class="container">
+        <h2>Has ahorrado</h2>
         <div id="counter" class="counter">0 €</div>
+        <p>A lo largo de</p>
         <div id="timer" class="timer">Tiempo: 0d 0h 0m</div>
 
-        <button class="resistencia" onclick="resistencia()">Resistencia</button>
-        <button class="liquido" onclick="liquido()">Líquido</button>
-        <button class="reset" onclick="reiniciar()">Reiniciar</button>
-        <button class="logout" onclick="logout()">Cerrar sesión</button>
+        <button class="resistencia" onclick="resistencia()">
+            <img src="./imgs/electric_bolt_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="Resistencia"
+                style="float: left; margin-right: 8px;">
+            Resistencia
+        </button>
+        <button class="liquido" onclick="liquido()">
+            <img src="./imgs/water_drop_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="Líquido"
+                style="float: left; margin-right: 8px;">
+            Líquido
+        </button>
+        <button class="reset" onclick="reiniciar()">
+            <img src="./imgs/skull_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="Reiniciar"
+                style="float: left; margin-right: 8px;">
+            Reiniciar
+        </button>
+        <button class="logout" onclick="logout()">
+            <img src="./imgs/logout_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" alt="Cerrar sesión"
+                style="float: left; margin-right: 8px;">
+            Cerrar sesión
+        </button>
     </div>
 
     <script>
